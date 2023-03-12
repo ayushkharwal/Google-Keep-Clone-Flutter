@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
 
+// .g stands for generated. This file is generated using
+// 'flutter packages pub run buid_runner build' command
 part 'Note.g.dart';
 
 @HiveType(typeId: 0)
-class Note {
+class Note extends HiveObject {
   @HiveField(0)
   String? userId;
 
