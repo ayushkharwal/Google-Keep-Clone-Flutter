@@ -48,6 +48,17 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     Navigator.pop(context);
   }
 
+  // initState() Funtion
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.isUpdate) {
+      titleTextController.text = widget.note!.title!;
+      noteTextController.text = widget.note!.content!;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,12 +68,16 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            noteTextController.text.isEmpty
-                ? titleTextController.text.isEmpty
-                : writeData(
-                    titleTextController.text,
-                    noteTextController.text,
-                  );
+            if (widget.isUpdate) {
+              updateNote();
+            } else {
+              noteTextController.text.isEmpty
+                  ? titleTextController.text.isEmpty
+                  : writeData(
+                      titleTextController.text,
+                      noteTextController.text,
+                    );
+            }
 
             Navigator.pop(context);
           },
@@ -100,7 +115,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               child: TextField(
                 maxLines: null,
                 controller: noteTextController,
-                autofocus: true,
+                autofocus: (widget.isUpdate == true) ? false : true,
                 style: const TextStyle(fontSize: 24),
                 decoration: const InputDecoration(
                   border: InputBorder.none,

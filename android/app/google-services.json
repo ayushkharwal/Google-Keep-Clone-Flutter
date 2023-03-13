@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "629833298049",
+    "project_id": "keep-clone-c8ae9",
+    "storage_bucket": "keep-clone-c8ae9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629833298049:android:aaa6de11143428f09e5d80",
+        "android_client_info": {
+          "package_name": "com.example.google_keep_assignment1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629833298049-hf4spooonktg11mmdndjabtgc46e1d54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1VaOBCuZ0QNhKa48GdhHH-cu70qyD2lc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629833298049-hf4spooonktg11mmdndjabtgc46e1d54.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

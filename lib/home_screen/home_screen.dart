@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_keep_assignment1/create_note_screen/create_note_screen.dart';
 import 'package:google_keep_assignment1/home_screen/components.dart';
@@ -18,110 +19,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Edit Note Function
-  editNote(Note note, String title, String content, DateTime dateAdded) {
-    note.title = title;
-    note.content = content;
-    note.dateAdded = dateAdded;
-
-    note.save();
-    //Provider.of<NotesProvider>(context, listen: false).updateNote(note);
-  }
-
   @override
   Widget build(BuildContext context) {
     bool isLongPressed = false;
-    NotesProvider notesProvider = Provider.of<NotesProvider>(context);
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey[100],
 
         // Floating action button
-        floatingActionButton: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12),
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CreateNoteScreen(
-                    isUpdate: true,
-                  ),
-                ),
-              );
-            },
-            backgroundColor: Colors.grey[100],
-            child: const Icon(
-              Icons.add_rounded,
-              color: Colors.black,
-              size: 34,
-            ),
-          ),
-        ),
+        floatingActionButton: floatingActionButton(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 
         // Drawer
-        drawer: Drawer(
-          backgroundColor: Colors.white,
-          child: Column(
-            children: [
-              // Logo
-              SizedBox(
-                height: 100,
-                child: Image.asset(
-                  'assets/icons/logo.png',
-                  fit: BoxFit.fill,
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // notes
-              const ListTile(
-                leading: Icon(
-                  Icons.bubble_chart_outlined,
-                  color: Colors.black,
-                  size: 28,
-                ),
-                title: Text(
-                  'Notes',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              const Divider(color: Colors.grey, height: 5),
-
-              // Deleted Notes tab
-              const ListTile(
-                leading: Icon(
-                  Icons.delete_rounded,
-                  color: Colors.black45,
-                  size: 28,
-                ),
-                title: Text(
-                  'Deleted',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black45,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        drawer: drawer(),
 
         // Bottom Navigation Bar
-        bottomNavigationBar: BottomAppBar(
-          elevation: 9,
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 0,
-          child: Container(
-            height: 55,
-            decoration: BoxDecoration(
-                border: Border.all(
-              color: Colors.grey.shade200,
-            )),
-          ),
-        ),
+        bottomNavigationBar: bottomNavigationBar(),
 
         // Body
         body: SingleChildScrollView(
@@ -129,75 +43,87 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 7),
             child: Column(
               children: [
-                // Search Bar
+                // Search Bar/ Edit Bar
                 isLongPressed == false ? searchBar() : editBar(isLongPressed),
 
                 // Notes
                 SizedBox(
-                  child: ValueListenableBuilder<Box<Note>>(
-                    valueListenable: Boxes.getNote().listenable(),
-                    builder: (context, box, _) {
-                      return StaggeredGridView.countBuilder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: notesProvider.notes.length,
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 2,
-                        mainAxisSpacing: 2,
-                        staggeredTileBuilder: (index) =>
-                            const StaggeredTile.fit(2),
-                        itemBuilder: (context, index) {
-                          Note note = notesProvider.notes[index];
-                          return InkWell(
-                            onLongPress: () {
-                              isLongPressed = true;
-                              notesProvider.deleteNoteAt(index);
-                            },
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CreateNoteScreen(isUpdate: false),
-                                  ));
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(2),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: Colors.grey.shade300,
+                  child: Consumer<NotesProvider>(
+                      builder: (context, notesProvider, _) {
+                    return ValueListenableBuilder<Box<Note>>(
+                      valueListenable: Boxes.getNote().listenable(),
+                      builder: (context, box, _) {
+                        NotesProvider notesProvider =
+                            Provider.of<NotesProvider>(context);
+
+                        var myBox = box.values.toList().cast<Note>();
+
+                        // Call setNotes to update the notes list in the provider
+                        notesProvider.setNotes(myBox);
+
+                        return StaggeredGridView.countBuilder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: notesProvider.notes.length,
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 2,
+                          mainAxisSpacing: 2,
+                          staggeredTileBuilder: (index) =>
+                              const StaggeredTile.fit(2),
+                          itemBuilder: (context, index) {
+                            Note currentNote = notesProvider.notes[index];
+                            return InkWell(
+                              onLongPress: () {
+                                isLongPressed = true;
+                                notesProvider.deleteNoteAt(index);
+                              },
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CreateNoteScreen(
+                                          isUpdate: true, note: currentNote),
+                                    ));
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.all(2),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      currentNote.title!,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      currentNote.content!,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 15,
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    )
+                                  ],
                                 ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    note.title!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    note.content!,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 15,
-                                    style: const TextStyle(color: Colors.black),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }),
                 ),
               ],
             ),

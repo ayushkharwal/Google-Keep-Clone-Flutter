@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_keep_assignment1/create_note_screen/create_note_screen.dart';
 import 'package:google_keep_assignment1/search_screen.dart/search_screen.dart';
 
 // SearchBar
@@ -135,4 +137,103 @@ Widget editBar(bool isLongPressed) {
       ),
     );
   });
+}
+
+// Drawer
+Widget drawer() {
+  return Drawer(
+    backgroundColor: Colors.white,
+    child: Column(
+      children: [
+        // Logo
+        SizedBox(
+          height: 100,
+          child: Image.asset(
+            'assets/icons/logo.png',
+            fit: BoxFit.fill,
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        // notes
+        const ListTile(
+          leading: Icon(
+            Icons.bubble_chart_outlined,
+            color: Colors.black,
+            size: 28,
+          ),
+          title: Text(
+            'Notes',
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
+        const Divider(color: Colors.grey, height: 5),
+
+        // Logout tab
+        GestureDetector(
+          onTap: () {
+            FirebaseAuth.instance.signOut();
+          },
+          child: const ListTile(
+            leading: Icon(
+              Icons.exit_to_app_rounded,
+              color: Colors.red,
+              size: 28,
+            ),
+            title: Text(
+              'Logout',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+// Floating Action Button
+Widget floatingActionButton() {
+  return Builder(
+    builder: (context) {
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CreateNoteScreen(isUpdate: false),
+              ),
+            );
+          },
+          backgroundColor: Colors.grey[100],
+          child: const Icon(
+            Icons.add_rounded,
+            color: Colors.black,
+            size: 34,
+          ),
+        ),
+      );
+    },
+  );
+}
+
+// Bottom Navigation Bar
+Widget bottomNavigationBar() {
+  return BottomAppBar(
+    elevation: 9,
+    shape: const CircularNotchedRectangle(),
+    notchMargin: 0,
+    child: Container(
+      height: 55,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey.shade200,
+        ),
+      ),
+    ),
+  );
 }

@@ -44,4 +44,9 @@ class NotesProvider extends ChangeNotifier {
     box.clear();
     loadNotes();
   }
+
+  void setNotes(List<Note> newNotes) {
+    _notes = newNotes;
+    notifyListeners();
+  }
 }
