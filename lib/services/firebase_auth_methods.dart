@@ -9,6 +9,9 @@ class FirebaseAuthMethods {
   // State Persistence
   Stream<User?> get authState => FirebaseAuth.instance.authStateChanges();
 
+  // Current User
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
   // Signup with email and password
   Future<void> signupWithEmailPassword({
     required String email,

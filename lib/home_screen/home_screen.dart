@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_keep_assignment1/create_note_screen/create_note_screen.dart';
 import 'package:google_keep_assignment1/home_screen/components.dart';
 import 'package:google_keep_assignment1/models/Note.dart';
 import 'package:google_keep_assignment1/provider/notes_provider.dart';
 import 'package:google_keep_assignment1/services/boxes.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
@@ -58,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         var myBox = box.values.toList().cast<Note>();
 
-                        // Call setNotes to update the notes list in the provider
+                        // Updates the notes list in the provider
                         notesProvider.setNotes(myBox);
 
                         return StaggeredGridView.countBuilder(
@@ -75,7 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             return InkWell(
                               onLongPress: () {
                                 isLongPressed = true;
-                                notesProvider.deleteNoteAt(index);
+                                Future.delayed(Duration.zero, () {
+                                  notesProvider.deleteNoteAt(index);
+                                });
                               },
                               onTap: () {
                                 Navigator.push(

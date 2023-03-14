@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_keep_assignment1/create_note_screen/create_note_screen.dart';
 import 'package:google_keep_assignment1/search_screen.dart/search_screen.dart';
+import 'package:google_keep_assignment1/services/firebase_database_methods.dart';
 
 // SearchBar
 Widget searchBar() {
@@ -169,6 +170,27 @@ Widget drawer() {
         ),
         const Divider(color: Colors.grey, height: 5),
 
+        // Sync Tile
+        GestureDetector(
+          onTap: () {
+            settingDataToDatabase();
+          },
+          child: const ListTile(
+            leading: Icon(
+              Icons.cloud_sync_rounded,
+              color: Colors.black,
+              size: 28,
+            ),
+            title: Text(
+              'Sync',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
+        //const Divider(color: Colors.grey, height: 5),
+
+        const Spacer(),
+
         // Logout tab
         GestureDetector(
           onTap: () {
@@ -189,6 +211,7 @@ Widget drawer() {
             ),
           ),
         ),
+        const SizedBox(height: 10),
       ],
     ),
   );

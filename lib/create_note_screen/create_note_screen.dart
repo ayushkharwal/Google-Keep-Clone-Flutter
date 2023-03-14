@@ -1,9 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_keep_assignment1/models/Note.dart';
 import 'package:google_keep_assignment1/provider/notes_provider.dart';
 import 'package:google_keep_assignment1/services/boxes.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:google_keep_assignment1/services/firebase_auth_methods.dart';
 import 'package:provider/provider.dart';
 
 class CreateNoteScreen extends StatefulWidget {
@@ -22,17 +22,22 @@ class CreateNoteScreen extends StatefulWidget {
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
   NotesProvider notesProvider = NotesProvider();
+  var myBox = Boxes.getNote().values.toList().cast<Note>();
 
   // Text Editing Controllers
   TextEditingController titleTextController = TextEditingController();
   TextEditingController noteTextController = TextEditingController();
 
   // Writing data in hive database
-  writeData(var title, var content /*,var userId,*/) {
+  writeData(
+    var title,
+    var content,
+    var userId,
+  ) {
     final note = Note()
       ..title = title
       ..content = content
-      //..userId = userId
+      ..userId = userId
       ..dateAdded = DateTime.now();
 
     Provider.of<NotesProvider>(context, listen: false).addNote(note);
@@ -45,6 +50,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     widget.note!.title = titleTextController.text;
     widget.note!.content = noteTextController.text;
     notesProvider.updateNote(widget.note!);
+    // notesProvider.setNotes(myBox);
     Navigator.pop(context);
   }
 
@@ -61,6 +67,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+
     return Scaffold(
       // AppBar
       appBar: AppBar(
@@ -76,6 +84,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                   : writeData(
                       titleTextController.text,
                       noteTextController.text,
+                      FirebaseAuthMethods(auth).currentUserId,
                     );
             }
 
@@ -95,6 +104,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
           children: [
             // Title Textfield
             TextField(
+              textCapitalization: TextCapitalization.words,
               controller: titleTextController,
               style: const TextStyle(fontSize: 28),
               decoration: const InputDecoration(
