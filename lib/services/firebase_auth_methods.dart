@@ -10,7 +10,7 @@ class FirebaseAuthMethods {
   Stream<User?> get authState => FirebaseAuth.instance.authStateChanges();
 
   // Current User
-  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  //final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
   // Signup with email and password
   Future<void> signupWithEmailPassword({

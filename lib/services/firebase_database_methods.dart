@@ -12,11 +12,11 @@ final noteList = notes
     .map((note) => {
           'title': note.title,
           'content': note.content,
-          'userId': FirebaseAuthMethods(auth).currentUserId,
+          'userId': FirebaseAuth.instance.currentUser!.uid,
           'dateAdded': note.dateAdded.toString(),
         })
     .toList();
 
-Future settingDataToDatabase() async {
+Future syncDataWithFirebase() async {
   await databaseRef.set(noteList);
 }

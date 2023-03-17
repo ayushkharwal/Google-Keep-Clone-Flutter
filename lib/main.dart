@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_keep_assignment1/auth_screens/login_screen.dart';
 import 'package:google_keep_assignment1/home_screen/home_screen.dart';
 import 'package:google_keep_assignment1/models/Note.dart';
+import 'package:google_keep_assignment1/provider/home_screen_provider.dart';
 import 'package:google_keep_assignment1/provider/notes_provider.dart';
 import 'package:google_keep_assignment1/services/firebase_auth_methods.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -20,6 +21,7 @@ Future main() async {
 
   // Opening Hive box
   await Hive.openBox<Note>('note');
+  await Hive.openBox('switchBox');
 
   // initializing Firebase
   await Firebase.initializeApp();
@@ -46,6 +48,10 @@ class MyApp extends StatelessWidget {
         // For notes
         ChangeNotifierProvider(
           create: ((context) => NotesProvider()),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => HomeScreenProvider(),
         ),
       ],
       child: const MaterialApp(

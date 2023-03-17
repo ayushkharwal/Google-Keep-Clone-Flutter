@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_keep_assignment1/create_note_screen/create_note_screen.dart';
 import 'package:google_keep_assignment1/search_screen.dart/search_screen.dart';
-import 'package:google_keep_assignment1/services/firebase_database_methods.dart';
 
 // SearchBar
 Widget searchBar() {
@@ -111,7 +109,7 @@ Widget editBar(bool isLongPressed) {
           const SizedBox(width: 10),
 
           // Selected Notes Count
-          Container(
+          SizedBox(
             height: 50,
             width: 240,
             child: Column(
@@ -138,83 +136,6 @@ Widget editBar(bool isLongPressed) {
       ),
     );
   });
-}
-
-// Drawer
-Widget drawer() {
-  return Drawer(
-    backgroundColor: Colors.white,
-    child: Column(
-      children: [
-        // Logo
-        SizedBox(
-          height: 100,
-          child: Image.asset(
-            'assets/icons/logo.png',
-            fit: BoxFit.fill,
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        // notes
-        const ListTile(
-          leading: Icon(
-            Icons.bubble_chart_outlined,
-            color: Colors.black,
-            size: 28,
-          ),
-          title: Text(
-            'Notes',
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-        const Divider(color: Colors.grey, height: 5),
-
-        // Sync Tile
-        GestureDetector(
-          onTap: () {
-            settingDataToDatabase();
-          },
-          child: const ListTile(
-            leading: Icon(
-              Icons.cloud_sync_rounded,
-              color: Colors.black,
-              size: 28,
-            ),
-            title: Text(
-              'Sync',
-              style: TextStyle(fontSize: 18),
-            ),
-          ),
-        ),
-        //const Divider(color: Colors.grey, height: 5),
-
-        const Spacer(),
-
-        // Logout tab
-        GestureDetector(
-          onTap: () {
-            FirebaseAuth.instance.signOut();
-          },
-          child: const ListTile(
-            leading: Icon(
-              Icons.exit_to_app_rounded,
-              color: Colors.red,
-              size: 28,
-            ),
-            title: Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.red,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-      ],
-    ),
-  );
 }
 
 // Floating Action Button

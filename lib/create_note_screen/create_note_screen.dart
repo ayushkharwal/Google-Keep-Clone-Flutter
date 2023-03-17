@@ -42,7 +42,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
 
     Provider.of<NotesProvider>(context, listen: false).addNote(note);
 
-    print('Note is stored locally.');
+    // print('Note is stored locally.');
   }
 
   // updateNote() function
@@ -84,7 +84,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                   : writeData(
                       titleTextController.text,
                       noteTextController.text,
-                      FirebaseAuthMethods(auth).currentUserId,
+                      FirebaseAuth.instance.currentUser!.uid,
                     );
             }
 
